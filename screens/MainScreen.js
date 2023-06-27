@@ -3,7 +3,6 @@ import React, {useEffect, useState} from "react";
 import Database from '../database'
 import {useIsFocused} from "@react-navigation/native";
 
-
 export function MainScreen() {
     const {width, height} = Dimensions.get('window');
     const [letter, setLetter] = useState('');
@@ -12,22 +11,29 @@ export function MainScreen() {
     const [lastIndex, setLastIndex] = useState(0)
     const isFocused = useIsFocused()
 
-
     useEffect(() => {
-
         if (isFocused) {
             Database.getAllSelectedRows(rows => {
                 const names = rows.map(e => e.name)
-                setLetters(names)
                 if (names.length > 0) {
-                    setRandomLetter(names)
+                    setLetters(names)
                 } else {
                     setLetter("")
+                    setLetters([])
                 }
                 setLoading(false)
             })
+        } else {
+            setLetter("")
+            setLetters([])
         }
     }, [isFocused])
+
+    useEffect(() => {
+        if (letters.length > 0) {
+            setRandomLetter(letters)
+        }
+    }, [letters])
 
     if (loading) {
         return <ActivityIndicator size="large" color="#0000ff"/>;
